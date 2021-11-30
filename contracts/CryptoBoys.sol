@@ -25,11 +25,7 @@ contract CryptoBoys is ERC721URIStorage  {
   // total number of crypto boys minted
   uint256 public cryptoBoyCounter;
 
-   // Token name
-   string private _name;
-
-   // Token symbol
-   string private _symbol;
+ 
 
 
   event collectoinNameEvent(string _name);
@@ -58,24 +54,13 @@ contract CryptoBoys is ERC721URIStorage  {
   mapping(string => bool) public tokenURIExists;
 
   // initialize contract while deployment with contract's collection name and token
-  constructor() ERC721("Crypto Boys Collection", "CB")
-  //constructor(string memory _name, string memory _symbol) ERC721("Crypto Boys Collection", "CB")
+  //constructor() ERC721("Crypto Boys Collection", "CB")
+  constructor(string memory _name, string memory _symbol) ERC721("Crypto Boys Collection", "CB")
   {
     collectionName = _name;
-    //emit collectoinNameEvent(name_);
-    //collectionName = "Crypto Boys Collection";
+   
     collectionNameSymbol = _symbol; 
   } 
- /*   constructor() ERC721("Crypto Boys Collection", "CB") {
-    collectionName = name;
-    collectionNameSymbol = symbol();
-  }  */
-
-  // get name
-
-  function getName() public view returns (string memory){
-    return "Crypto Boys Collection";
-  }
 
 
   // mint a new crypto boy
@@ -231,3 +216,4 @@ contract CryptoBoys is ERC721URIStorage  {
     allCryptoBoys[_tokenId] = cryptoboy;
   }
 }
+

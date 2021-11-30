@@ -1,6 +1,6 @@
+const { assert } = require("chai");
 
-
-const CryptoBoys = artifacts.require("./FactoryNFT.sol");
+const CryptoBoys = artifacts.require("./CryptoBoys.sol");
 
 contract("CryptoBoys", async (accounts) => {
   let  cryptoBoys,result, cryptoBoyCount;
@@ -8,20 +8,17 @@ contract("CryptoBoys", async (accounts) => {
   
 
 beforeEach(async () => {
-    //cryptoBoys = await CryptoBoys.new(["Crypto Boys Collection", "CB"],{from:accounts[0]});
-    //cryptoBoys = await CryptoBoys.new("Crypto Boys Collection", "CB");
-    //cryptoBoys = await CryptoBoys.deployed();
+    cryptoBoys = await CryptoBoys.deployed();
   }); 
 
   describe("Deployment", async () => {
     it("Should assert true", async () => {
-        //let cryptoBoys = await CryptoBoys.deployed();
+     
         return assert.isTrue(true);
       });
 
     it("contract has an address", async () => {
-      //let cryptoBoys = await CryptoBoys.deployed();
-      //const cryptoBoys = await CryptoBoys.new(["Crypto Boys Collection", "CB"],{from:accounts[0]});
+  
       const address = await cryptoBoys.address;
       assert.notEqual(address, 0x0);
       assert.notEqual(address, "");
@@ -31,12 +28,9 @@ beforeEach(async () => {
 
     it("has a name", async () => {
       
-     // const cryptoBoys = await CryptoBoys.new(["Crypto Boys Collection", "CB"],{from:accounts[0]});
-     // const cryptoBoys = await CryptoBoys.deployed("Crypto Boys Collection", "CB");
-      //const name  = "Crypto Boys Collection";
-      const name = await cryptoBoys.getName();
-      //const name = await cryptoBoys.collectionName;
-     
+
+      const name = await cryptoBoys.collectionName();
+       
       assert.equal(name, "Crypto Boys Collection");
     });
 
@@ -48,7 +42,7 @@ beforeEach(async () => {
   });
 
   describe("application features", async () => {
-    it("allows users to mint ERC721 token", async () => {
+    it("Initialize state ERC721 token", async () => {
       cryptoBoyCount = await cryptoBoys.cryptoBoyCounter();
       assert.equal(cryptoBoyCount.toNumber(), 0);
 
@@ -68,7 +62,9 @@ beforeEach(async () => {
         from: accounts[0],
       });
       assert.equal(tokenNameExists, false);
+    });
 
+    it("allows users to mint first ERC721 token", async () => {
       let colorExists;
       const colorsArray1 = [
         "#2a2b2e",
@@ -145,6 +141,9 @@ beforeEach(async () => {
       assert.equal(web3.utils.fromWei(cryptoboy.price, "ether"), 1);
       assert.equal(cryptoboy.numberOfTransfers.toNumber(), 0);
       assert.equal(cryptoboy.forSale, true);
+    });
+
+    it("not allows users to mint ERC721 token  - same token uri -reject ", async () => {
 
       const colorsArray2 = [
         "#212b2e",
@@ -171,7 +170,9 @@ beforeEach(async () => {
         colorsArray2,
         { from: accounts[1] }
       );
+    
 
+   
       const colorsArray3 = [
         "#232b2e",
         "#535a66",
@@ -199,6 +200,10 @@ beforeEach(async () => {
         { from: accounts[3] }
       ).should.be.rejected;
 
+    });
+
+    it("not allows users to mint ERC721 token - 0x0 adress sending txn - reject", async () => {
+
       const colorsArray4 = [
         "#252b2e",
         "#555a66",
@@ -225,6 +230,9 @@ beforeEach(async () => {
         colorsArray4,
         { from: 0x0000000000000000000000000000000000000000 }
       ).should.be.rejected;
+    });
+
+    it("not allows users to mint 5th ERC721 token", async () => {
 
       const colorsArray5 = [
         "#2d2b2e",

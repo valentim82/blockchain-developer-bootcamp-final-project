@@ -1,5 +1,6 @@
-var FactoryNFT = artifacts.require("./FactoryNFT.sol");
+var CryptoBoys = artifacts.require("./CryptoBoys.sol");
 
 module.exports = function(deployer) {
-  deployer.deploy(FactoryNFT);
+  deployer.deploy(CryptoBoys, "Crypto Boys Collection", "CB");
 };
+  
