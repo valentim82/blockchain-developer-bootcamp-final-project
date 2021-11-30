@@ -1,23 +1,27 @@
-import * as chai from 'chai';
-import * as chaiAsPromised from 'chai-as-promised';
 
-const { assert } = require("chai");
 
 const CryptoBoys = artifacts.require("./FactoryNFT.sol");
 
-require("chai")
-  .use(require("chai-as-promised"))
-  .should();
+contract("CryptoBoys", async (accounts) => {
+  let  cryptoBoys,result, cryptoBoyCount;
+  
+  
 
-contract("Crypto Boys", async (accounts) => {
-  let cryptoBoys, result, cryptoBoyCount;
-
-  before(async () => {
-    cryptoBoys = await CryptoBoys.deployed();
-  });
+beforeEach(async () => {
+    //cryptoBoys = await CryptoBoys.new(["Crypto Boys Collection", "CB"],{from:accounts[0]});
+    //cryptoBoys = await CryptoBoys.new("Crypto Boys Collection", "CB");
+    //cryptoBoys = await CryptoBoys.deployed();
+  }); 
 
   describe("Deployment", async () => {
+    it("Should assert true", async () => {
+        //let cryptoBoys = await CryptoBoys.deployed();
+        return assert.isTrue(true);
+      });
+
     it("contract has an address", async () => {
+      //let cryptoBoys = await CryptoBoys.deployed();
+      //const cryptoBoys = await CryptoBoys.new(["Crypto Boys Collection", "CB"],{from:accounts[0]});
       const address = await cryptoBoys.address;
       assert.notEqual(address, 0x0);
       assert.notEqual(address, "");
@@ -26,11 +30,18 @@ contract("Crypto Boys", async (accounts) => {
     });
 
     it("has a name", async () => {
-      const name = await cryptoBoys.collectionName();
+      
+     // const cryptoBoys = await CryptoBoys.new(["Crypto Boys Collection", "CB"],{from:accounts[0]});
+     // const cryptoBoys = await CryptoBoys.deployed("Crypto Boys Collection", "CB");
+      //const name  = "Crypto Boys Collection";
+      const name = await cryptoBoys.getName();
+      //const name = await cryptoBoys.collectionName;
+     
       assert.equal(name, "Crypto Boys Collection");
     });
 
     it("has a symbol", async () => {
+      //cryptoBoys = await CryptoBoys.new("Crypto Boys Collection", "CB");;
       const symbol = await cryptoBoys.collectionNameSymbol();
       assert.equal(symbol, "CB");
     });

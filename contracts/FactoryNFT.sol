@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+//import  "@openzeppelin-solidity/contracts/token/ERC721/ERC721Full.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
@@ -15,14 +16,23 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/introspection/ERC165.sol";
 
 // CryptoBoys smart contract inherits ERC721 interface
-contract CryptoBoys is ERC721URIStorage {
+contract CryptoBoys is ERC721URIStorage  {
 
   // this contract's token collection name
-  string public collectionName;
+  string public  collectionName;
   // this contract's token symbol
-  string public collectionNameSymbol;
+  string public  collectionNameSymbol;
   // total number of crypto boys minted
   uint256 public cryptoBoyCounter;
+
+   // Token name
+   string private _name;
+
+   // Token symbol
+   string private _symbol;
+
+
+  event collectoinNameEvent(string _name);
 
   // define crypto boy struct
    struct CryptoBoy {
@@ -37,6 +47,7 @@ contract CryptoBoys is ERC721URIStorage {
     bool forSale;
   }
 
+
   // map cryptoboy's token id to crypto boy
   mapping(uint256 => CryptoBoy) public allCryptoBoys;
   // check if token name exists
@@ -47,10 +58,25 @@ contract CryptoBoys is ERC721URIStorage {
   mapping(string => bool) public tokenURIExists;
 
   // initialize contract while deployment with contract's collection name and token
-  constructor() ERC721("Crypto Boys Collection", "CB") {
-    collectionName = name();
+  constructor() ERC721("Crypto Boys Collection", "CB")
+  //constructor(string memory _name, string memory _symbol) ERC721("Crypto Boys Collection", "CB")
+  {
+    collectionName = _name;
+    //emit collectoinNameEvent(name_);
+    //collectionName = "Crypto Boys Collection";
+    collectionNameSymbol = _symbol; 
+  } 
+ /*   constructor() ERC721("Crypto Boys Collection", "CB") {
+    collectionName = name;
     collectionNameSymbol = symbol();
+  }  */
+
+  // get name
+
+  function getName() public view returns (string memory){
+    return "Crypto Boys Collection";
   }
+
 
   // mint a new crypto boy
   function mintCryptoBoy(string memory _name, string memory _tokenURI, uint256 _price, string[] calldata _colors) external {
