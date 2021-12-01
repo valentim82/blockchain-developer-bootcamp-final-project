@@ -14,16 +14,17 @@ import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/utils/Context.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/introspection/ERC165.sol";
+//import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
 
-// CryptoBoys smart contract inherits ERC721 interface
-contract CryptoBoys is ERC721URIStorage  {
+// NFTStaking smart contract inherits ERC721 interface
+contract NFTStaking is ERC721URIStorage  {
 
   // this contract's token collection name
   string public  collectionName;
   // this contract's token symbol
   string public  collectionNameSymbol;
   // total number of crypto boys minted
-  uint256 public cryptoBoyCounter;
+  uint256 public nftStakingCounter;
 
  
 
@@ -31,7 +32,7 @@ contract CryptoBoys is ERC721URIStorage  {
   event collectoinNameEvent(string _name);
 
   // define crypto boy struct
-   struct CryptoBoy {
+   struct Staking {
     uint256 tokenId;
     string tokenName;
     string tokenURI;
@@ -44,8 +45,8 @@ contract CryptoBoys is ERC721URIStorage  {
   }
 
 
-  // map cryptoboy's token id to crypto boy
-  mapping(uint256 => CryptoBoy) public allCryptoBoys;
+  // map staking's token id to crypto boy
+  mapping(uint256 => Staking) public allNFTStaking;
   // check if token name exists
   mapping(string => bool) public tokenNameExists;
   // check if color exists
@@ -64,27 +65,27 @@ contract CryptoBoys is ERC721URIStorage  {
 
 
   // mint a new crypto boy
-  function mintCryptoBoy(string memory _name, string memory _tokenURI, uint256 _price, string[] calldata _colors) external {
+  function mintStaking(string memory _name, string memory _tokenURI, uint256 _price, string[] calldata _colors) external {
     // check if thic fucntion caller is not an zero address account
     require(msg.sender != address(0));
     // increment counter
-    cryptoBoyCounter ++;
+    nftStakingCounter ++;
     // check if a token exists with the above token id => incremented counter
-    require(!_exists(cryptoBoyCounter));
+    require(!_exists(nftStakingCounter));
 
     // loop through the colors passed and check if each colors already exists or not
     for(uint i=0; i<_colors.length; i++) {
       require(!colorExists[_colors[i]]);
     }
     // check if the token URI already exists or not
-    require(!tokenURIExists[_tokenURI]);
+    require(!tokenURIExists[_tokenURI],"token URI already exist");
     // check if the token name already exists or not
     require(!tokenNameExists[_name]);
 
     // mint the token
-    _mint(msg.sender, cryptoBoyCounter);
+    _mint(msg.sender, nftStakingCounter);
     // set token URI (bind token id with the passed in token URI)
-    _setTokenURI(cryptoBoyCounter, _tokenURI);
+    _setTokenURI(nftStakingCounter, _tokenURI);
 
     // loop through the colors passed and make each of the colors as exists since the token is already minted
     for (uint i=0; i<_colors.length; i++) {
@@ -98,8 +99,8 @@ contract CryptoBoys is ERC721URIStorage  {
     // creat a new crypto boy (struct) and pass in new values
     address payable zero  = payable (address(0));
     address payable sender  = payable (msg.sender);
-    CryptoBoy memory newCryptoBoy = CryptoBoy(
-    cryptoBoyCounter,
+    Staking memory newStaking = Staking(
+    nftStakingCounter,
     _name,
     _tokenURI,
     sender,
@@ -109,7 +110,7 @@ contract CryptoBoys is ERC721URIStorage  {
     0,
     true);
     // add the token id and it's crypto boy to all crypto boys mapping
-    allCryptoBoys[cryptoBoyCounter] = newCryptoBoy;
+    allNFTStaking[nftStakingCounter] = newStaking;
   }
 
   // get owner of the token
@@ -126,8 +127,7 @@ contract CryptoBoys is ERC721URIStorage  {
 
   // get total number of tokens minted so far
   function getNumberOfTokensMinted() public view returns(uint256) {
-    //uint256 totalNumberOfTokensMinted = totalSupply();
-    uint256 totalNumberOfTokensMinted = 0;
+    uint256 totalNumberOfTokensMinted = nftStakingCounter;
     return totalNumberOfTokensMinted;
   }
 
@@ -155,26 +155,26 @@ contract CryptoBoys is ERC721URIStorage  {
     require(tokenOwner != address(0));
     // the one who wants to buy the token should not be the token's owner
     require(tokenOwner != msg.sender);
-    // get that token from all crypto boys mapping and create a memory of it defined as (struct => CryptoBoy)
-    CryptoBoy memory cryptoboy = allCryptoBoys[_tokenId];
+    // get that token from all crypto boys mapping and create a memory of it defined as (struct => Staking)
+    Staking memory staking = allNFTStaking[_tokenId];
     // price sent in to buy should be equal to or more than the token's price
-    require(msg.value >= cryptoboy.price);
+    require(msg.value >= staking.price);
     // token should be for sale
-    require(cryptoboy.forSale);
+    require(staking.forSale);
     // transfer the token from owner to the caller of the function (buyer)
     _transfer(tokenOwner, msg.sender, _tokenId);
     // get owner of the token
-    address payable sendTo = cryptoboy.currentOwner;
+    address payable sendTo = staking.currentOwner;
     // send token's worth of ethers to the owner
     sendTo.transfer(msg.value);
     // update the token's previous owner
-    cryptoboy.previousOwner = cryptoboy.currentOwner;
+    staking.previousOwner = staking.currentOwner;
     // update the token's current owner
-    cryptoboy.currentOwner = payable (msg.sender);
+    staking.currentOwner = payable (msg.sender);
     // update the how many times this token was transfered
-    cryptoboy.numberOfTransfers += 1;
+    staking.numberOfTransfers += 1;
     // set and update that token in the mapping
-    allCryptoBoys[_tokenId] = cryptoboy;
+    allNFTStaking[_tokenId] = staking;
   }
 
   function changeTokenPrice(uint256 _tokenId, uint256 _newPrice) public {
@@ -186,12 +186,12 @@ contract CryptoBoys is ERC721URIStorage  {
     address tokenOwner = ownerOf(_tokenId);
     // check that token's owner should be equal to the caller of the function
     require(tokenOwner == msg.sender);
-    // get that token from all crypto boys mapping and create a memory of it defined as (struct => CryptoBoy)
-    CryptoBoy memory cryptoboy = allCryptoBoys[_tokenId];
+    // get that token from all crypto boys mapping and create a memory of it defined as (struct => Staking)
+    Staking memory staking = allNFTStaking[_tokenId];
     // update token's price with new price
-    cryptoboy.price = _newPrice;
+    staking.price = _newPrice;
     // set and update that token in the mapping
-    allCryptoBoys[_tokenId] = cryptoboy;
+    allNFTStaking[_tokenId] = staking;
   }
 
   // switch between set for sale and set not for sale
@@ -204,16 +204,16 @@ contract CryptoBoys is ERC721URIStorage  {
     address tokenOwner = ownerOf(_tokenId);
     // check that token's owner should be equal to the caller of the function
     require(tokenOwner == msg.sender);
-    // get that token from all crypto boys mapping and create a memory of it defined as (struct => CryptoBoy)
-    CryptoBoy memory cryptoboy = allCryptoBoys[_tokenId];
+    // get that token from all crypto boys mapping and create a memory of it defined as (struct => Staking)
+    Staking memory staking = allNFTStaking[_tokenId];
     // if token's forSale is false make it true and vice versa
-    if(cryptoboy.forSale) {
-      cryptoboy.forSale = false;
+    if(staking.forSale) {
+      staking.forSale = false;
     } else {
-      cryptoboy.forSale = true;
+      staking.forSale = true;
     }
     // set and update that token in the mapping
-    allCryptoBoys[_tokenId] = cryptoboy;
+    allNFTStaking[_tokenId] = staking;
   }
 }
 
