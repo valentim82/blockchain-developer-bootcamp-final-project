@@ -25,6 +25,21 @@ contract NFTStaking is ERC721URIStorage  {
   string public  collectionNameSymbol;
   // total number of crypto boys minted
   uint256 public nftStakingCounter;
+  /**
+  * @notice We usually require to know who are all the stakeholders.
+  */
+  address[] internal stakeholders;
+  /**
+  * @notice The stakes for each stakeholder.
+  */
+  mapping(address => uint256[]) internal stakes;
+ 
+   /**
+   * @notice The accumulated rewards for each stakeholder.
+   */
+     mapping(address => uint256) internal rewards;
+
+     uint256[] internal nft;
 
  
 
@@ -56,13 +71,18 @@ contract NFTStaking is ERC721URIStorage  {
 
   // initialize contract while deployment with contract's collection name and token
   //constructor() ERC721("Crypto Boys Collection", "CB")
-  constructor(string memory _name, string memory _symbol) ERC721("Crypto Boys Collection", "CB")
+  constructor(string memory _name, string memory _symbol) ERC721("Staking NFT Collection", "Staking")
   {
     collectionName = _name;
    
     collectionNameSymbol = _symbol; 
   } 
 
+/*   function registerUser(address _user) {
+
+    // registers user
+  
+  } */
 
   // mint a new crypto boy
   function mintStaking(string memory _name, string memory _tokenURI, uint256 _price, string[] calldata _colors) external {
@@ -186,7 +206,7 @@ contract NFTStaking is ERC721URIStorage  {
     address tokenOwner = ownerOf(_tokenId);
     // check that token's owner should be equal to the caller of the function
     require(tokenOwner == msg.sender);
-    // get that token from all crypto boys mapping and create a memory of it defined as (struct => Staking)
+    // get that token from all crypto nft mapping and create a memory of it defined as (struct => Staking)
     Staking memory staking = allNFTStaking[_tokenId];
     // update token's price with new price
     staking.price = _newPrice;
@@ -204,7 +224,7 @@ contract NFTStaking is ERC721URIStorage  {
     address tokenOwner = ownerOf(_tokenId);
     // check that token's owner should be equal to the caller of the function
     require(tokenOwner == msg.sender);
-    // get that token from all crypto boys mapping and create a memory of it defined as (struct => Staking)
+    // get that token from all crypto nft mapping and create a memory of it defined as (struct => Staking)
     Staking memory staking = allNFTStaking[_tokenId];
     // if token's forSale is false make it true and vice versa
     if(staking.forSale) {
@@ -215,5 +235,82 @@ contract NFTStaking is ERC721URIStorage  {
     // set and update that token in the mapping
     allNFTStaking[_tokenId] = staking;
   }
+
+  
+    // ---------- STAKES ----------
+
+    /* 
+     * @notice A method for a stakeholder to create a NFT stake. The ideia of stake a NFT should be different 
+     * stake a ERC20 token. The idea here is a transfer the onwership to the contract adn not  burn the NFT
+     * @param _stake The size of the stake to be created.
+     */
+     function createStake(uint256 _tokenId) public
+    {
+      // require caller of the function is not an empty address
+      require(msg.sender != address(0));
+      // require that token should exist
+      require(_exists(_tokenId));
+      // get the token's owner
+      address tokenOwner = ownerOf(_tokenId);
+      // check that token's owner should be equal to the caller of the function
+      require(tokenOwner == msg.sender);
+      
+      //_burn(_tokenId); // burn the NFT
+      // stake mapping == true
+	    // transfer the ownership to the contrac
+      // pay the NFT owner with the DAO token or with the rent money
+      if(stakes[msg.sender].length == 0) addStakeholder(msg.sender);
+      stakes[msg.sender].push(_tokenId); // makes to senses add a tokenId [change]
+    }
+
+    /*
+     * @notice A method for a stakeholder to remove a stake.
+     * @param _stake The size of the stake to be removed.
+     */
+     function removeStake(uint256 _tokenId)  public
+     {
+       for (uint256 i = 0; i < stakes[msg.sender].length; i += 1){
+          if(stakes[msg.sender][i] == _tokenId){
+              // Move the last element into the place to delete
+              stakes[msg.sender][i] = stakes[msg.sender][stakes[msg.sender].length - 1];
+              // Remove the last element
+              stakes[msg.sender].pop();
+
+          }
+       }
+       if(stakes[msg.sender].length == 0) removeStakeholder(msg.sender);
+       //_mint(msg.sender, _stake);
+    }
+
+    function addStakeholder(address _stakeholder)
+        public
+    {
+        (bool _isStakeholder, ) = isStakeholder(_stakeholder);
+        if(!_isStakeholder) stakeholders.push(_stakeholder);
+    }
+
+
+    // ---------- STAKEHOLDERS ----------
+
+    /**
+     * @notice A method to check if an address is a stakeholder.
+     * @param _address The address to verify.
+     * @return bool, uint256 Whether the address is a stakeholder, 
+     * and if so its position in the stakeholders array.
+     */
+     function isStakeholder(address _address) public view returns(bool, uint256)
+     {
+       for (uint256 s = 0; s < stakeholders.length; s += 1){
+          if (_address == stakeholders[s]) return (true, s);
+       }
+       return (false, 0);
+     }
+     function removeStakeholder(address _stakeholder) public {
+        (bool _isStakeholder, uint256 s) = isStakeholder(_stakeholder);
+        if(_isStakeholder){
+            stakeholders[s] = stakeholders[stakeholders.length - 1];
+            stakeholders.pop();
+        } 
+    }
 }
 
