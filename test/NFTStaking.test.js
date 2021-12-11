@@ -216,6 +216,8 @@ describe("application features", async () => {
      ).should.be.rejected; */
 
   });
+
+ 
 /*
   it("not allows users to mint ERC721 token - 0x0 adress sending txn - reject", async () => {
 
@@ -381,6 +383,58 @@ describe("application features", async () => {
     );
     assert.equal(totalNumberOfTokensOwnedByAnAddress.toNumber(), 1); // change to 3
   });
+  it("allows users to stake token myCBNFT2 ", async () => {
+
+    // save original NFT token
+    let originalTokenOwner = await nftStaking.getTokenOwner(2);
+    console.log("original NFT token owner: " + originalTokenOwner );
+
+    await nftStaking.createStake(2, { from: accounts[1] }
+      );
+    // save new NFT token
+     let newTokenOwner = await nftStaking.getTokenOwner(2);
+     console.log("New NFT token owner: " + newTokenOwner );
+  });
+  it("allows users to remove stake token myCBNFT2 ", async () => {
+
+    // save original NFT token
+    let originalTokenOwner = await nftStaking.getTokenOwner(2);
+    console.log("original NFT token owner: " + originalTokenOwner );
+
+    await nftStaking.removeStake(2, { from: accounts[1] }
+      );
+    // save new NFT token
+    let newTokenOwner = await nftStaking.getTokenOwner(2);
+    console.log("New NFT token owner: " + newTokenOwner );
+  });
+
+  it("allows users to stake token myCBNFT1 ", async () => {
+
+    // save original NFT token
+    let originalTokenOwner = await nftStaking.getTokenOwner(1);
+    console.log("original NFT token owner: " + originalTokenOwner );
+
+    await nftStaking.createStake(1, { from: accounts[0] }
+      );
+    // save new NFT token
+     let newTokenOwner = await nftStaking.getTokenOwner(1);
+     console.log("New NFT token owner: " + newTokenOwner );
+  });
+
+
+
+/*   it("try to to remove stake token myCBNFT1 from a diffeterent user ", async () => {
+
+    // save original NFT token
+    let originalTokenOwner = await nftStaking.getTokenOwner(1);
+    console.log("original NFT token owner: " + originalTokenOwner );
+
+    await nftStaking.removeStake(1, { from: accounts[1] }
+      ).should.be.rejected();
+    // save new NFT token
+    let newTokenOwner = await nftStaking.getTokenOwner(1);
+    console.log("New NFT token owner: " + newTokenOwner );
+  }); */
 /* 
   it("allows users to buy token for specified ethers", async () => {
     const oldTokenOwner = await nftStaking.getTokenOwner(1);

@@ -19,6 +19,11 @@ import "@openzeppelin/contracts/utils/introspection/ERC165.sol";
 // NFTStaking smart contract inherits ERC721 interface
 contract NFTStaking is ERC721URIStorage  {
 
+  // Event declaration
+  // Up to 3 parameters can be indexed.
+  // Indexed parameters helps you filter the logs by the indexed parameter
+  event Log(address indexed sender, string message);
+
   // this contract's token collection name
   string public  collectionName;
   // this contract's token symbol
@@ -54,6 +59,7 @@ contract NFTStaking is ERC721URIStorage  {
     address payable mintedBy;
     address payable currentOwner;
     address payable previousOwner;
+    bool staked;
     uint256 price;
     uint256 numberOfTransfers;
     bool forSale;
@@ -126,6 +132,7 @@ contract NFTStaking is ERC721URIStorage  {
     sender,
     sender,
     zero,
+    false,
     _price,
     0,
     true);
@@ -175,7 +182,7 @@ contract NFTStaking is ERC721URIStorage  {
     require(tokenOwner != address(0));
     // the one who wants to buy the token should not be the token's owner
     require(tokenOwner != msg.sender);
-    // get that token from all crypto boys mapping and create a memory of it defined as (struct => Staking)
+    // get that token from all crypto NFT mapping and create a memory of it defined as (struct => Staking)
     Staking memory staking = allNFTStaking[_tokenId];
     // price sent in to buy should be equal to or more than the token's price
     require(msg.value >= staking.price);
@@ -227,6 +234,8 @@ contract NFTStaking is ERC721URIStorage  {
     // get that token from all crypto nft mapping and create a memory of it defined as (struct => Staking)
     Staking memory staking = allNFTStaking[_tokenId];
     // if token's forSale is false make it true and vice versa
+    // check that the token is not staked
+    require(staking.staked==false);
     if(staking.forSale) {
       staking.forSale = false;
     } else {
@@ -244,8 +253,9 @@ contract NFTStaking is ERC721URIStorage  {
      * stake a ERC20 token. The idea here is a transfer the onwership to the contract adn not  burn the NFT
      * @param _stake The size of the stake to be created.
      */
-     function createStake(uint256 _tokenId) public
-    {
+     function createStake(uint256 _tokenId) external
+      {
+      emit Log(msg.sender, "Inicio");
       // require caller of the function is not an empty address
       require(msg.sender != address(0));
       // require that token should exist
@@ -254,33 +264,57 @@ contract NFTStaking is ERC721URIStorage  {
       address tokenOwner = ownerOf(_tokenId);
       // check that token's owner should be equal to the caller of the function
       require(tokenOwner == msg.sender);
+      emit Log(msg.sender, "Meio");
+
+      // get that token from all crypto NFT mapping and create a memory of it defined as (struct => Staking)
+      Staking memory staking = allNFTStaking[_tokenId];
+      // check that the token is not staked
+      require(staking.staked==false);
+
       
       //_burn(_tokenId); // burn the NFT
-      // stake mapping == true
-	    // transfer the ownership to the contrac
-      // pay the NFT owner with the DAO token or with the rent money
-      if(stakes[msg.sender].length == 0) addStakeholder(msg.sender);
-      stakes[msg.sender].push(_tokenId); // makes to senses add a tokenId [change]
+      // transfer the token from owner to the contract
+      _transfer(tokenOwner, address(this), _tokenId);
+      // change the status of staked == true
+      staking.staked = true;
+
+
+    
+
+      // set and update that token in the mapping
+      allNFTStaking[_tokenId] = staking;
+      emit Log(msg.sender, "Fim");
+     
     }
 
     /*
-     * @notice A method for a stakeholder to remove a stake.
+     * @notice A method for a stakeholder to remove a stake. Transfer the owership to the owner of the contract
      * @param _stake The size of the stake to be removed.
      */
      function removeStake(uint256 _tokenId)  public
      {
-       for (uint256 i = 0; i < stakes[msg.sender].length; i += 1){
-          if(stakes[msg.sender][i] == _tokenId){
-              // Move the last element into the place to delete
-              stakes[msg.sender][i] = stakes[msg.sender][stakes[msg.sender].length - 1];
-              // Remove the last element
-              stakes[msg.sender].pop();
-
-          }
-       }
-       if(stakes[msg.sender].length == 0) removeStakeholder(msg.sender);
-       //_mint(msg.sender, _stake);
-    }
+        // require caller of the function is not an empty address
+        require(msg.sender != address(0));
+        // require that token should exist
+        require(_exists(_tokenId));
+        // get the token's owner
+        address tokenOwner = ownerOf(_tokenId);
+        // check that token's owner should be equal to the caller of the function
+        require(tokenOwner == address(this));
+        // get that token from all crypto NFT mapping and create a memory of it defined as (struct => Staking)
+        Staking memory staking = allNFTStaking[_tokenId];
+        // check that the token is not staked
+        require(staking.staked==true);
+        require(staking.currentOwner==msg.sender);
+        
+        // transfer the token from contract to the owner
+        _transfer(address(this), msg.sender, _tokenId);
+        // change the status of staked == true
+        staking.staked = false;
+        
+        // set and update that token in the mapping
+        allNFTStaking[_tokenId] = staking;
+      }
 
     function addStakeholder(address _stakeholder)
         public
