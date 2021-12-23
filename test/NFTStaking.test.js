@@ -1,15 +1,7 @@
+//const { assert } = require("chai");
+
 const { assert } = require("chai");
 
-//const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
-
-/*  require("chai")
-  .use(require("chai-as-promised"))
-  .should(); 
-
-require("chai")
-.use(require("module"))
-.should();  
-*/
 
 const NFTStaking = artifacts.require("./NFTStaking.sol");
 
@@ -48,7 +40,7 @@ describe("Deployment", async () => {
   });
 
   it("has a symbol", async () => {
-    //nftStaking = await NFTStaking.new("Crypto Boys Collection", "CB");;
+    
     const symbol = await nftStaking.collectionNameSymbol();
     assert.equal(symbol, "Staking");
   });
@@ -158,7 +150,7 @@ describe("application features", async () => {
   });
 
   it("not allows users to mint ERC721 token  - same token uri -reject ", async () => {
-
+      
     const colorsArray2 = [
       "#212b2e",
       "#515a66",
@@ -187,39 +179,44 @@ describe("application features", async () => {
     );
   
 
- 
-/*       const colorsArray3 = [
-      "#232b2e",
-      "#535a66",
-      "#a3c2a8",
-      "#a3eb98",
-      "#83ff65",
-      "#935d81",
-       "#e38258",
-       "#f3f740",
-       "#d3dc6a",
-       "#6389a1",
-       "#f3938c",
-       "#e3b89c",
-       "#e3d2ac",
-       "#93afb7",
-       "#4381a4",
-     ];
+    
+          const colorsArray3 = [
+          "#232b2e",
+          "#535a66",
+          "#a3c2a8",
+          "#a3eb98",
+          "#83ff65",
+          "#935d81",
+          "#e38258",
+          "#f3f740",
+          "#d3dc6a",
+          "#6389a1",
+          "#f3938c",
+          "#e3b89c",
+          "#e3d2ac",
+          "#93afb7",
+          "#4381a4",
+        ];
 
-     // same token uri -reject
-     await nftStaking.mintStaking(
-       "myCBNFT3",
-       "https://gateway.pinata.cloud/ipfs/QmYFmJgQGH4uPQRYN15Xdv4aLd9o4Aq63y1e4GgN6kj5aK/2",
-       web3.utils.toWei("1", "Ether"),
-       colorsArray3,
-      { from: accounts[3] }
-     ).should.be.rejected; */
+    try{
+        // same token uri -reject
+        await nftStaking.mintStaking(
+          "myCBNFT3",
+          "https://gateway.pinata.cloud/ipfs/QmYFmJgQGH4uPQRYN15Xdv4aLd9o4Aq63y1e4GgN6kj5aK/2",
+          web3.utils.toWei("1", "Ether"),
+          colorsArray3,
+          { from: accounts[3] }
+        );
+
+    }catch (error) {
+      assert.equal(error.reason, "Try to mint anoter NFT with the same URI");
+    }
 
   });
 
  
-/*
-  it("not allows users to mint ERC721 token - 0x0 adress sending txn - reject", async () => {
+
+  /* it("not allows users to mint ERC721 token - 0x0 adress sending txn - reject", async () => {
 
     const colorsArray4 = [
       "#252b2e",
@@ -238,16 +235,22 @@ describe("application features", async () => {
       "#95afb7",
       "#4581a4",
     ];
+    try{
+          // 0x0 adress sending txn - reject
+      await nftStaking.mintStaking(
+        "myCBNFT4",
+        "https://gateway.pinata.cloud/ipfs/QmYFmJgQGH4uPQRYN14Xdv4aLd9o4Aq63y1e4GgN6kj5aK/2",
+        web3.utils.toWei("1", "Ether"),
+        colorsArray4,
+        //{ from: address(0) }
+        { from: 0x0000000000000000000000000000000000000000 }
+       )
+    }catch (error){
+      assert.equal(error.reason,"Try to mint NFT with 0x0 adress");
+    }
+    }); */
 
-    // 0x0 adress sending txn - reject
-    await nftStaking.mintStaking(
-      "myCBNFT4",
-      "https://gateway.pinata.cloud/ipfs/QmYFmJgQGH4uPQRYN14Xdv4aLd9o4Aq63y1e4GgN6kj5aK/2",
-      web3.utils.toWei("1", "Ether"),
-      colorsArray4,
-      { from: 0x0000000000000000000000000000000000000000 }
-    ).should.be.rejected;
-  });
+ 
 
   it("not allows users to mint 5th ERC721 token", async () => {
 
@@ -322,14 +325,18 @@ describe("application features", async () => {
     ];
 
     // same token name - reject
-    await nftStaking.mintStaking(
-      "myCBNFT6",
-      "https://gateway.pinata.cloud/ipfs/QmYFmJgQGH4uPSRYN15Xdv4aLd3o4Aq63y1e4GgN6kj5aK/2",
-      web3.utils.toWei("1", "Ether"),
-      colorsArray7,
-      { from: accounts[0] }
-    ).should.be.rejected;
+    try{
 
+        await nftStaking.mintStaking(
+        "myCBNFT6",
+        "https://gateway.pinata.cloud/ipfs/QmYFmJgQGH4uPSRYN15Xdv4aLd3o4Aq63y1e4GgN6kj5aK/2",
+        web3.utils.toWei("1", "Ether"),
+        colorsArray7,
+        { from: accounts[0] }
+      );
+    }catch(error){
+      assert.equal(error.reason, "Try to mint NFT with the same name");
+    }
     const colorsArray8 = [
       "#2a242e",
       "#5a5466",
@@ -347,16 +354,20 @@ describe("application features", async () => {
       "#9ca4b7",
       "#4284a4",
     ];
+    try{
 
-    // same color/colors - reject (13th value of array8 is same as 8th value of array1)
-    await nftStaking.mintStaking(
-      "myCBNFT8",
-      "https://gateway.pinata.cloud/ipfs/QmYFmJgQGH4uPSRYN15Xdv4aLd3o4Bq46y1f4GgN6kj5aK/2",
-      web3.utils.toWei("1", "Ether"),
-      colorsArray8,
-      { from: accounts[0] }
-    ).should.be.rejected;
-  }); */
+        // same color/colors - reject (13th value of array8 is same as 8th value of array1)
+        await nftStaking.mintStaking(
+          "myCBNFT8",
+          "https://gateway.pinata.cloud/ipfs/QmYFmJgQGH4uPSRYN15Xdv4aLd3o4Bq46y1f4GgN6kj5aK/2",
+          web3.utils.toWei("1", "Ether"),
+          colorsArray8,
+          { from: accounts[0] }
+        )
+    }catch(error){
+      assert.equal(error.reason,"Try to mint NFT with the some color");
+    }
+  }); 
 
   it("returns address of the token's owner", async () => {
     const tokenOwner = await nftStaking.getTokenOwner(2);
@@ -374,14 +385,14 @@ describe("application features", async () => {
 
   it("returns total number of tokens minted so far", async () => {
     const totalNumberOfTokensMinted = await nftStaking.getNumberOfTokensMinted();
-    assert.equal(totalNumberOfTokensMinted.toNumber(), 2); // change for 4 later
+    assert.equal(totalNumberOfTokensMinted.toNumber(), 4); 
   });
 
   it("returns total number of tokens owned by an address", async () => {
     const totalNumberOfTokensOwnedByAnAddress = await nftStaking.getTotalNumberOfTokensOwnedByAnAddress(
       accounts[0]
     );
-    assert.equal(totalNumberOfTokensOwnedByAnAddress.toNumber(), 1); // change to 3
+    assert.equal(totalNumberOfTokensOwnedByAnAddress.toNumber(), 3); 
   });
   it("allows users to stake token myCBNFT2 ", async () => {
 
@@ -423,22 +434,27 @@ describe("application features", async () => {
 
 
 
-/*   it("try to to remove stake token myCBNFT1 from a diffeterent user ", async () => {
+   it("try to to remove stake token myCBNFT1 from a diffeterent user ", async () => {
 
     // save original NFT token
     let originalTokenOwner = await nftStaking.getTokenOwner(1);
     console.log("original NFT token owner: " + originalTokenOwner );
+    try {
+      await nftStaking.removeStake(1, { from: accounts[1] }
+        );
 
-    await nftStaking.removeStake(1, { from: accounts[1] }
-      ).should.be.rejected();
+    }catch (error) {
+      assert.equal(error.reason, "Try to remove the stake with a different users");
+    }
+    
     // save new NFT token
     let newTokenOwner = await nftStaking.getTokenOwner(1);
     console.log("New NFT token owner: " + newTokenOwner );
-  }); */
-/* 
+  });
+ 
   it("allows users to buy token for specified ethers", async () => {
     const oldTokenOwner = await nftStaking.getTokenOwner(1);
-    assert.equal(oldTokenOwner, accounts[0]);
+    assert.equal(oldTokenOwner,++ accounts[0]);
 
     let oldTokenOwnerBalance;
     oldTokenOwnerBalance = await web3.eth.getBalance(accounts[0]);
@@ -508,7 +524,8 @@ describe("application features", async () => {
       from: accounts[0],
       value: web3.utils.toWei("1", "Ether"),
     }).should.be.rejected;
-  }); */
+  });
+  
 /* 
   it("allows users to change token price", async () => {
     let StakingPrice;
