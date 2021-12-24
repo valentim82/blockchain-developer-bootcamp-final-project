@@ -71,7 +71,7 @@ contract NFTStaking is ERC721URIStorage  {
   // check if token name exists
   mapping(string => bool) public tokenNameExists;
   // check if color exists
-  mapping(string => bool) public colorExists;
+  //mapping(string => bool) public colorExists;
   // check if token URI exists
   mapping(string => bool) public tokenURIExists;
 
@@ -91,7 +91,7 @@ contract NFTStaking is ERC721URIStorage  {
   } */
 
   // mint a new crypto boy
-  function mintStaking(string memory _name, string memory _tokenURI, uint256 _price, string[] calldata _colors) external {
+  function mintStaking(string memory _name, string memory _tokenURI, uint256 _price) external {
     // check if thic fucntion caller is not an zero address account
     require(msg.sender != address(0),"Try to mint NFT with 0x0 adress");
     // increment counter
@@ -100,9 +100,9 @@ contract NFTStaking is ERC721URIStorage  {
     require(!_exists(nftStakingCounter));
 
     // loop through the colors passed and check if each colors already exists or not
-    for(uint i=0; i<_colors.length; i++) {
+    /* for(uint i=0; i<_colors.length; i++) {
       require(!colorExists[_colors[i]],"Try to mint NFT with the some color");
-    }
+    } */
     // check if the token URI already exists or not
     require(!tokenURIExists[_tokenURI],"Try to mint anoter NFT with the same URI");
     // check if the token name already exists or not
@@ -113,10 +113,10 @@ contract NFTStaking is ERC721URIStorage  {
     // set token URI (bind token id with the passed in token URI)
     _setTokenURI(nftStakingCounter, _tokenURI);
 
-    // loop through the colors passed and make each of the colors as exists since the token is already minted
+   /*  // loop through the colors passed and make each of the colors as exists since the token is already minted
     for (uint i=0; i<_colors.length; i++) {
       colorExists[_colors[i]] = true;
-    }
+    } */
     // make passed token URI as exists
     tokenURIExists[_tokenURI] = true;
     // make token name passed as exists
@@ -173,7 +173,7 @@ contract NFTStaking is ERC721URIStorage  {
   // by a token by passing in the token's id
   function buyToken(uint256 _tokenId) public payable {
     // check if the function caller is not an zero account address
-    require(msg.sender != address(0));
+    require(msg.sender != 0x0000000000000000000000000000000000000000,"Try to buy nft with user 0x000000000000");
     // check if the token id of the token being bought exists or not
     require(_exists(_tokenId));
     // get the token's owner
@@ -208,11 +208,11 @@ contract NFTStaking is ERC721URIStorage  {
     // require caller of the function is not an empty address
     require(msg.sender != address(0));
     // require that token should exist
-    require(_exists(_tokenId));
+    require(_exists(_tokenId), "Token do not exist");
     // get the token's owner
     address tokenOwner = ownerOf(_tokenId);
     // check that token's owner should be equal to the caller of the function
-    require(tokenOwner == msg.sender);
+    require(tokenOwner == msg.sender, "Try to change token price with a user that is not the owner");
     // get that token from all crypto nft mapping and create a memory of it defined as (struct => Staking)
     Staking memory staking = allNFTStaking[_tokenId];
     // update token's price with new price
@@ -305,7 +305,7 @@ contract NFTStaking is ERC721URIStorage  {
         Staking memory staking = allNFTStaking[_tokenId];
         // check that the token is not staked
         require(staking.staked==true);
-        //require(staking.currentOwner==msg.sender);
+        require(staking.currentOwner==msg.sender,"Try to remove the stake with a different users");
         
         // transfer the token from contract to the owner
         _transfer(address(this), msg.sender, _tokenId);
