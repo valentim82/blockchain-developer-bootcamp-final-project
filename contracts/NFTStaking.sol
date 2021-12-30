@@ -91,7 +91,7 @@ contract NFTStaking is ERC721URIStorage  {
   } */
 
   // mint a new crypto boy
-  function mintStaking(string memory _name, string memory _tokenURI, uint256 _price) external {
+  function mintStaking(string memory _name, string memory _tokenURI, uint256 _price) public {
     // check if thic fucntion caller is not an zero address account
     require(msg.sender != address(0),"Try to mint NFT with 0x0 adress");
     // increment counter
