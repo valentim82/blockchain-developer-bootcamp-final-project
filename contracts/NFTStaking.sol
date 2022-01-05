@@ -22,7 +22,7 @@ contract NFTStaking is ERC721URIStorage  {
   // Event declaration
   // Up to 3 parameters can be indexed.
   // Indexed parameters helps you filter the logs by the indexed parameter
-  event Log(address indexed sender, string message);
+  
 
   // this contract's token collection name
   string public  collectionName;
@@ -99,24 +99,17 @@ contract NFTStaking is ERC721URIStorage  {
     // check if a token exists with the above token id => incremented counter
     require(!_exists(nftStakingCounter));
 
-    // loop through the colors passed and check if each colors already exists or not
-    /* for(uint i=0; i<_colors.length; i++) {
-      require(!colorExists[_colors[i]],"Try to mint NFT with the some color");
-    } */
     // check if the token URI already exists or not
     require(!tokenURIExists[_tokenURI],"Try to mint anoter NFT with the same URI");
     // check if the token name already exists or not
     require(!tokenNameExists[_name], "Try to mint NFT with the same name");
 
     // mint the token
-    _mint(msg.sender, nftStakingCounter);
+    _safeMint(msg.sender, nftStakingCounter);
     // set token URI (bind token id with the passed in token URI)
     _setTokenURI(nftStakingCounter, _tokenURI);
 
-   /*  // loop through the colors passed and make each of the colors as exists since the token is already minted
-    for (uint i=0; i<_colors.length; i++) {
-      colorExists[_colors[i]] = true;
-    } */
+   
     // make passed token URI as exists
     tokenURIExists[_tokenURI] = true;
     // make token name passed as exists
@@ -149,7 +142,20 @@ contract NFTStaking is ERC721URIStorage  {
   // get metadata of the token
   function getTokenMetaData(uint _tokenId) public view returns(string memory) {
     string memory tokenMetaData = tokenURI(_tokenId);
-    return tokenMetaData;
+    //Staking memory staking = allNFTStaking[_tokenId];
+    return (tokenMetaData);
+  }
+  // get name of the token
+  function getTokenName(uint _tokenId) public view returns(string memory) {
+    //string memory tokenMetaData = tokenURI(_tokenId);
+    Staking memory staking = allNFTStaking[_tokenId];
+    return (staking.tokenName);
+  }
+  // get price of the token
+  function getTokenPrice(uint _tokenId) public view returns(uint256) {
+    //string memory tokenMetaData = tokenURI(_tokenId);
+    Staking memory staking = allNFTStaking[_tokenId];
+    return (staking.price);
   }
 
   // get total number of tokens minted so far
@@ -170,10 +176,11 @@ contract NFTStaking is ERC721URIStorage  {
     return tokenExists;
   }
 
+
   // by a token by passing in the token's id
   function buyToken(uint256 _tokenId) public payable {
     // check if the function caller is not an zero account address
-    require(msg.sender != 0x0000000000000000000000000000000000000000,"Try to buy nft with user 0x000000000000");
+    require(msg.sender != address(0),"Buy nft with user 0x00");
     // check if the token id of the token being bought exists or not
     require(_exists(_tokenId));
     // get the token's owner
@@ -255,7 +262,7 @@ contract NFTStaking is ERC721URIStorage  {
      */
      function createStake(uint256 _tokenId) external
       {
-      emit Log(msg.sender, "Inicio");
+      
       // require caller of the function is not an empty address
       require(msg.sender != address(0));
       // require that token should exist
@@ -264,7 +271,7 @@ contract NFTStaking is ERC721URIStorage  {
       address tokenOwner = ownerOf(_tokenId);
       // check that token's owner should be equal to the caller of the function
       require(tokenOwner == msg.sender);
-      emit Log(msg.sender, "Meio");
+      
 
       // get that token from all crypto NFT mapping and create a memory of it defined as (struct => Staking)
       Staking memory staking = allNFTStaking[_tokenId];
@@ -283,7 +290,7 @@ contract NFTStaking is ERC721URIStorage  {
 
       // set and update that token in the mapping
       allNFTStaking[_tokenId] = staking;
-      emit Log(msg.sender, "Fim");
+      
      
     }
 

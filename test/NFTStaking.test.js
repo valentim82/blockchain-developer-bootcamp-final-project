@@ -1,4 +1,4 @@
-//const { assert } = require("chai");
+
 
 const { assert } = require("chai");
 
@@ -70,30 +70,7 @@ describe("application features", async () => {
   });
 
   it("allows users to mint first ERC721 token", async () => {
-    /* let colorExists;
-    const colorsArray1 = [
-      "#2a2b2e",
-      "#5a5a66",
-      "#a4c2a8",
-      "#aceb98",
-      "#87ff65",
-      "#995d81",
-      "#eb8258",
-      "#f6f740",
-      "#d8dc6a",
-      "#6689a1",
-      "#fe938c",
-      "#e6b89c",
-      "#ead2ac",
-      "#9cafb7",
-      "#4281a4",
-    ]; 
-    for (let i = 0; i < colorsArray1.length; i++) {
-      colorExists = await nftStaking.colorExists(colorsArray1[i], {
-        from: accounts[0],
-      });
-      assert.equal(colorExists, false);
-    }*/
+ 
 
     result = await nftStaking.mintStaking(
       "myCBNFT",
@@ -370,7 +347,8 @@ describe("application features", async () => {
 
   // returns tokenURI of the token
   it("returns metadata of a token", async () => {
-    const tokenMetaData = await nftStaking.getTokenMetaData(2);
+    
+   const tokenMetaData = await nftStaking.getTokenMetaData(2);
     assert.equal(
       tokenMetaData,
       "https://gateway.pinata.cloud/ipfs/QmYFmJgQGH4uPQRYN15Xdv4aLd9o4Aq63y1e4GgN6kj5aK/2"
