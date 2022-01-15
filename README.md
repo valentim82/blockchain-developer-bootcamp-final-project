@@ -41,7 +41,13 @@ https://valentim82.github.io/
 ## How to run project
 
 - Node.js v10.19.0 or later
-NPM v5.0.3 or later
-Windows, Linux or Mac OS X
-MetaMask extension in browser
-Ganache or another local testnet on port 7545
+- NPM v7.24.1 or later
+- Windows, Linux or Mac OS X
+- MetaMask extension in browser
+- Ganache or another local testnet on port 5500
+
+## Run dApp on browser with Ropsten testnet
+
+Connect MetaMask with Ropsten testnet
+Open https://valentim82.github.io/
+
