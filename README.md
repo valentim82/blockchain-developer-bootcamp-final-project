@@ -44,10 +44,37 @@ https://valentim82.github.io/
 - NPM v7.24.1 or later
 - Windows, Linux or Mac OS X
 - MetaMask extension in browser
-- Ganache or another local testnet on port 5500
+- Ganache or another local testnet on port 7545
 
 ## Run dApp on browser with Ropsten testnet
 
-Connect MetaMask with Ropsten testnet
-Open https://valentim82.github.io/
+- Connect MetaMask with Ropsten testnet
+- Open https://valentim82.github.io/
+
+## Run smartcontract unit test
+
+- In terminal, git clone https://github.com/valentim82/blockchain-developer-bootcamp-final-project.git
+- In terminal at project root folder, npm install
+- truffle develop
+- truffle migrate
+- truffle test
+
+## Run dApp on local server
+
+- In terminal, git clone  https://github.com/valentim82/blockchain-developer-bootcamp-final-project.git
+- In terminal at project root folder, npm install
+- Open Ganache and run testnet on port 7545
+- In Ganache, click on the key icon to the right of the first wallet and copy the private key
+- In browser, connect Metamask with testnet on port 7545
+- In Metamask, click ‘Import Account’ and paste the private key
+- In terminal at project root folder, truffle migrate --network development
+- Copy 'NFTStaking Contract Address' from terminal and paste after 'nftSAddress' in blockchain-developer-bootcamp-final-project/client/index.js at line 4 and blockchain-developer-bootcamp-final-project/stake/index.js at line 4
+
+### To setup frontend:
+
+- In terminal at project root folder, cd client
+- npm install
+- npm start
+- In browser, go to http://localhost:3000/
+- Add more accounts from Ganache to Metamask to test multiple features
 
