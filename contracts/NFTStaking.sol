@@ -23,7 +23,8 @@ contract NFTStaking is ERC721URIStorage,Ownable  {
 
   /// @notice Emitted when a nft is staked
   /// @param tokenOwner original token owner
-  event LogStaking(address tokenOwner);
+  /// @param message sucess message
+  event LogStaking(address tokenOwner,string message);
       
 
   /// @notice this contract's token collection name
@@ -316,7 +317,7 @@ contract NFTStaking is ERC721URIStorage,Ownable  {
 
       // set and update that token in the mapping
       allNFTStaking[_tokenId] = staking;
-      emit LogStaking(tokenOwner);
+      emit LogStaking(tokenOwner,"Success Stake");
       
      
     }

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consensus Final Project</title>
+  <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  
+
+</head>
+<body>
+  <h1>Mint your NFT</h1>
+
+  <div class="hidden md:flex md:items-center md:w-auto w-full order-3 md:order-1" id="menu">
+    <nav>
+        <ul class="md:flex items-center justify-between text-base text-gray-700 pt-4 md:pt-0">
+            <a class="inline-block no-underline hover:text-black hover:underline py-2 px-4" href="index.html">Create my NFT |</a> 
+            <a class="inline-block no-underline hover:text-black hover:underline py-2 px-4" href="stake.html">Stake | </a>
+            <a class="inline-block no-underline hover:text-black hover:underline py-2 px-4" href="sell_buy.html">Sell my Art |</a>
+            <a class="inline-block no-underline hover:text-black hover:underline py-2 px-4" href="about.html">About</a>
+        </ul>
+    </nav>
+</div>
+
+  <p>
+    Stake my art
+  </p>
+  <div id="mm-detected"></div>
+
+  <!-- Connect to MetaMask Wallet -->
+
+  <button id="mm-connect">Connect to MetaMask</button>
+
+  <!-- Display current address -->
+
+  <div id="mm-current-account"></div>
+
+  <!-- Provide the name, price and url to mint the nft to the contract  -->
+  <div>
+  <label for="name">NFTs ID:</label> <br>
+  <input id="ss-input-id" type="text" placeholder="Provide input"/>  
+</div>
+ 
+</div>
+  <button id="ss-input-button">Stake NFT</button>
+
+  <!-- Read input from contract -->
+  <div> <br>  
+    <button id="ss-get-value">Show my Collection</button>
+  </div>
+  <div> <br>  
+    <button id="ss-get-staking">Show my Staking</button>
+  </div><br>
+  <div id="ss-display-nft-by-contract">Number of NFT Created on the contract: </div> <br>
+  <div id="ss-display-nft-by-address">Number of NFT Created by Address: </div> <br>
+  <div id="ss-display-nft-stake-by-address">Number of NFT Stake on the contract: </div> <br>
+  <div id="nftImg">
+  
+
+  </div>
+
+</body>
+
+
+
+<!-- Had trouble and had to move the script down! -->
+<script src="stake.js"></script>
+
+
+</html>
