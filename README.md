@@ -43,6 +43,11 @@ https://valentim82.github.io/
   - Create a token utility to reward the staking.
   - Implement frontend interface to sell and buy nft.
 
+## Directory structure
+- client: Project's HTML + JS frontend.
+- contracts: Smart contracts that are deployed in the Ropsten testnet.
+- migrations: Migration files for deploying contracts in contracts directory.
+- test: Tests for smart contracts.
 
 ## How to run project
 
