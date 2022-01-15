@@ -1,47 +1,47 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
-//pragma abicoder v2;
 
-// import ERC721 iterface
-import "@openzeppelin/contracts/utils/Counters.sol";
+
+// import ERC721 and Ownable interfaces
+
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-//import  "@openzeppelin-solidity/contracts/token/ERC721/ERC721Full.sol";
-import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
-import "@openzeppelin/contracts/utils/Address.sol";
-import "@openzeppelin/contracts/utils/Context.sol";
-import "@openzeppelin/contracts/utils/Strings.sol";
-import "@openzeppelin/contracts/utils/introspection/ERC165.sol";
-//import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+
+/// @title Contract for manipulate NFT
+/// @author Tulio Valentim
+/// @notice Allows a user to mint, satke, sell and buy NFT
+/// @notice This is an experimental contract.
 
 // NFTStaking smart contract inherits ERC721 interface
-contract NFTStaking is ERC721URIStorage  {
-
-  // Event declaration
-  // Up to 3 parameters can be indexed.
-  // Indexed parameters helps you filter the logs by the indexed parameter
+contract NFTStaking is ERC721URIStorage,Ownable  {
   
+   /// @notice Emitted when a new nft is minted
+  /// @param nftStakingCounter number of nft minted
+  /// @param message sucess message
+  event LogMint(uint nftStakingCounter, string message); 
 
-  // this contract's token collection name
+  /// @notice Emitted when a nft is staked
+  /// @param tokenOwner original token owner
+  event LogStaking(address tokenOwner);
+      
+
+  /// @notice this contract's token collection name
   string public  collectionName;
-  // this contract's token symbol
+  /// @notice this contract's token symbol
   string public  collectionNameSymbol;
-  // total number of crypto boys minted
+  /// @notice total number of nfts minted
   uint256 public nftStakingCounter;
-  /**
-  * @notice We usually require to know who are all the stakeholders.
-  */
+  
+  /// @notice We usually require to know who are all the stakeholders.
   address[] internal stakeholders;
-  /**
-  * @notice The stakes for each stakeholder.
-  */
+  
+  /// @notice The stakes for each stakeholder.
   mapping(address => uint256[]) internal stakes;
  
-   /**
-   * @notice The accumulated rewards for each stakeholder.
-   */
+   
+  /// @notice The accumulated rewards for each stakeholder.
+   
      mapping(address => uint256) internal rewards;
 
      uint256[] internal nft;
@@ -51,7 +51,7 @@ contract NFTStaking is ERC721URIStorage  {
 
   event collectoinNameEvent(string _name);
 
-  // define crypto boy struct
+  /// @notice define crypto boy struct
    struct Staking {
     uint256 tokenId;
     string tokenName;
@@ -66,17 +66,15 @@ contract NFTStaking is ERC721URIStorage  {
   }
 
 
-  // map staking's token id to crypto boy
+  /// @notice map staking's token id to each nft
   mapping(uint256 => Staking) public allNFTStaking;
-  // check if token name exists
+  /// @notice check if token name exists
   mapping(string => bool) public tokenNameExists;
-  // check if color exists
-  //mapping(string => bool) public colorExists;
-  // check if token URI exists
+  /// @notice check if token URI exists
   mapping(string => bool) public tokenURIExists;
 
-  // initialize contract while deployment with contract's collection name and token
-  //constructor() ERC721("Crypto Boys Collection", "CB")
+  /// @notice initialize contract while deployment with contract's collection name and token
+  
   constructor(string memory _name, string memory _symbol) ERC721("Staking NFT Collection", "Staking")
   {
     collectionName = _name;
@@ -84,13 +82,11 @@ contract NFTStaking is ERC721URIStorage  {
     collectionNameSymbol = _symbol; 
   } 
 
-/*   function registerUser(address _user) {
 
-    // registers user
-  
-  } */
-
-  // mint a new crypto boy
+  /// @notice mint a new nft using the safeMint @ERC721 
+  /// @param _name name of the the new nft minted
+  /// @param _tokenURI link with the image is stored 
+  /// @param _price price to the nft minted
   function mintStaking(string memory _name, string memory _tokenURI, uint256 _price) public {
     // check if thic fucntion caller is not an zero address account
     require(msg.sender != address(0),"Try to mint NFT with 0x0 adress");
@@ -115,7 +111,7 @@ contract NFTStaking is ERC721URIStorage  {
     // make token name passed as exists
     tokenNameExists[_name] = true;
 
-    // creat a new crypto boy (struct) and pass in new values
+    // creat a new nft (struct) and pass in new values
     address payable zero  = payable (address(0));
     address payable sender  = payable (msg.sender);
     Staking memory newStaking = Staking(
@@ -129,55 +125,81 @@ contract NFTStaking is ERC721URIStorage  {
     _price,
     0,
     true);
-    // add the token id and it's crypto boy to all crypto boys mapping
+    // add the token id and it's struct to all nft mapping
     allNFTStaking[nftStakingCounter] = newStaking;
+
+    emit LogMint(nftStakingCounter, "Success Mint");
   }
 
-  // get owner of the token
+ 
+  /// @notice get owner of the token
+  /// @param _tokenId nft id
   function getTokenOwner(uint256 _tokenId) public view returns(address) {
     address _tokenOwner = ownerOf(_tokenId);
     return _tokenOwner;
   }
 
-  // get metadata of the token
+  
+  /// @notice get metadata of the toke
+  /// @param _tokenId nft id
   function getTokenMetaData(uint _tokenId) public view returns(string memory) {
     string memory tokenMetaData = tokenURI(_tokenId);
     //Staking memory staking = allNFTStaking[_tokenId];
     return (tokenMetaData);
   }
-  // get name of the token
+  
+  /// @notice get name of the token
+  /// @param _tokenId nft id
   function getTokenName(uint _tokenId) public view returns(string memory) {
     //string memory tokenMetaData = tokenURI(_tokenId);
     Staking memory staking = allNFTStaking[_tokenId];
     return (staking.tokenName);
   }
-  // get price of the token
+
+ 
+  /// @notice return if a token is staking or not
+  /// @param _tokenId nft id
+  function getOriginalOwner(uint _tokenId) public view returns(address) {
+    
+    Staking memory staking = allNFTStaking[_tokenId];
+    return (staking.currentOwner);
+
+    
+  }
+
+  /// @notice get price of the token
+  /// @param _tokenId nft id
   function getTokenPrice(uint _tokenId) public view returns(uint256) {
     //string memory tokenMetaData = tokenURI(_tokenId);
     Staking memory staking = allNFTStaking[_tokenId];
     return (staking.price);
   }
 
-  // get total number of tokens minted so far
+  /// @notice get total number of tokens minted so far
   function getNumberOfTokensMinted() public view returns(uint256) {
     uint256 totalNumberOfTokensMinted = nftStakingCounter;
     return totalNumberOfTokensMinted;
   }
 
-  // get total number of tokens owned by an address
+  /// @notice get total number of tokens owned by an address
+  /// @param _owner nft ownwer address
   function getTotalNumberOfTokensOwnedByAnAddress(address _owner) public view returns(uint256) {
     uint256 totalNumberOfTokensOwned = balanceOf(_owner);
     return totalNumberOfTokensOwned;
   }
 
-  // check if the token already exists
+  
+  /// @notice check if the token already exists
+  /// @param _tokenId nft id
   function getTokenExists(uint256 _tokenId) public view returns(bool) {
     bool tokenExists = _exists(_tokenId);
     return tokenExists;
   }
 
 
-  // by a token by passing in the token's id
+  
+   /// @notice  buy a token by passing in the token's id
+  /// @param _tokenId nft id
   function buyToken(uint256 _tokenId) public payable {
     // check if the function caller is not an zero account address
     require(msg.sender != address(0),"Buy nft with user 0x00");
@@ -211,6 +233,9 @@ contract NFTStaking is ERC721URIStorage  {
     allNFTStaking[_tokenId] = staking;
   }
 
+   /// @notice change token price
+  /// @param _tokenId nft id
+  /// @param _newPrice nft new price
   function changeTokenPrice(uint256 _tokenId, uint256 _newPrice) public {
     // require caller of the function is not an empty address
     require(msg.sender != address(0));
@@ -227,8 +252,9 @@ contract NFTStaking is ERC721URIStorage  {
     // set and update that token in the mapping
     allNFTStaking[_tokenId] = staking;
   }
-
-  // switch between set for sale and set not for sale
+  
+  /// @notice  switch between set for sale and set not for saled
+  /// @param _tokenId nft id
   function toggleForSale(uint256 _tokenId) public {
     // require caller of the function is not an empty address
     require(msg.sender != address(0));
@@ -255,11 +281,11 @@ contract NFTStaking is ERC721URIStorage  {
   
     // ---------- STAKES ----------
 
-    /* 
-     * @notice A method for a stakeholder to create a NFT stake. The ideia of stake a NFT should be different 
-     * stake a ERC20 token. The idea here is a transfer the onwership to the contract adn not  burn the NFT
-     * @param _stake The size of the stake to be created.
-     */
+    
+    /// @notice A method for a stakeholder to create a NFT stake. The idea of stake a NFT should be different 
+    /// @notice  stake a ERC20 token. The idea here is a transfer the onwership to the contract adn not  burn the NFT
+    /// @param _tokenId nft id
+    
      function createStake(uint256 _tokenId) external
       {
       
@@ -290,14 +316,15 @@ contract NFTStaking is ERC721URIStorage  {
 
       // set and update that token in the mapping
       allNFTStaking[_tokenId] = staking;
+      emit LogStaking(tokenOwner);
       
      
     }
 
-    /*
-     * @notice A method for a stakeholder to remove a stake. Transfer the owership to the owner of the contract
-     * @param _stake The size of the stake to be removed.
-     */
+    
+    /// @notice A method for a stakeholder to remove a stake. Transfer the owership to the owner of the contract
+    /// @param _tokenId nft id 
+     
      function removeStake(uint256 _tokenId)  public
      {
         // require caller of the function is not an empty address
@@ -333,12 +360,12 @@ contract NFTStaking is ERC721URIStorage  {
 
     // ---------- STAKEHOLDERS ----------
 
-    /**
-     * @notice A method to check if an address is a stakeholder.
-     * @param _address The address to verify.
-     * @return bool, uint256 Whether the address is a stakeholder, 
-     * and if so its position in the stakeholders array.
-     */
+    
+    /// @notice A method to check if an address is a stakeholder.
+    /// @param _address The address to verify.
+    /// @return bool, uint256 Whether the address is a stakeholder, 
+    /// and if so its position in the stakeholders array.
+     
      function isStakeholder(address _address) public view returns(bool, uint256)
      {
        for (uint256 s = 0; s < stakeholders.length; s += 1){
@@ -353,5 +380,15 @@ contract NFTStaking is ERC721URIStorage  {
             stakeholders.pop();
         } 
     }
-}
 
+   
+    /// @notice A simple method that calculates the rewards for each stakeholder.
+    /// @param _stakeholder The stakeholder to calculate rewards for.
+    /// @dev implement a method to distribut reward to a address ofter 1 day staking, based on the nft price
+     
+    function calculateReward(address _stakeholder) public view returns(uint256)
+    {
+    
+    }
+  
+}

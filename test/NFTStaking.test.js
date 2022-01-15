@@ -57,13 +57,13 @@ describe("application features", async () => {
 
     let tokenURIExists;
     tokenURIExists = await nftStaking.tokenURIExists(
-      "https://gateway.pinata.cloud/ipfs/QmYFmJgQGH4uPHRYN15Xdv4aLd9o4Aq63y1e4GgN6kj5aK/2",
+      "https://gateway.pinata.cloud/ipfs/QmVg4ZKBHNrVEHHxn47ejBZa1QwqZPr1eTVXadmBh1BYWb?preview=1",
       { from: accounts[0] }
     );
     assert.equal(tokenURIExists, false);
 
     let tokenNameExists;
-    tokenNameExists = await nftStaking.tokenNameExists("myCBNFT", {
+    tokenNameExists = await nftStaking.tokenNameExists("STAKINGNFT", {
       from: accounts[0],
     });
     assert.equal(tokenNameExists, false);
@@ -73,8 +73,8 @@ describe("application features", async () => {
  
 
     result = await nftStaking.mintStaking(
-      "myCBNFT",
-      "https://gateway.pinata.cloud/ipfs/QmYFmJgQGH4uPHRYN15Xdv4aLd9o4Aq63y1e4GgN6kj5aK/2",
+      "STAKINGNFT",
+      "https://gateway.pinata.cloud/ipfs/QmVg4ZKBHNrVEHHxn47ejBZa1QwqZPr1eTVXadmBh1BYWb?preview=1",
       web3.utils.toWei("1", "Ether"),
       { from: accounts[0] }
     );
@@ -86,32 +86,26 @@ describe("application features", async () => {
     assert.equal(tokenExists, true);
 
     tokenURIExists = await nftStaking.tokenURIExists(
-      "https://gateway.pinata.cloud/ipfs/QmYFmJgQGH4uPHRYN15Xdv4aLd9o4Aq63y1e4GgN6kj5aK/2",
+      "https://gateway.pinata.cloud/ipfs/QmVg4ZKBHNrVEHHxn47ejBZa1QwqZPr1eTVXadmBh1BYWb?preview=1",
       { from: accounts[0] }
     );
     assert.equal(tokenURIExists, true);
 
-    tokenNameExists = await nftStaking.tokenNameExists("myCBNFT", {
+    tokenNameExists = await nftStaking.tokenNameExists("STAKINGNFT", {
       from: accounts[0],
     });
     assert.equal(tokenNameExists, true);
 
-    /* for (let i = 0; i < colorsArray1.length; i++) {
-      colorExists = await nftStaking.colorExists(colorsArray1[i], {
-        from: accounts[0],
-      });
-      assert.equal(colorExists, true);
-    } */
 
     let Staking;
     Staking = await nftStaking.allNFTStaking(1, {
       from: accounts[0],
     });
     assert.equal(Staking.tokenId.toNumber(), 1);
-    assert.equal(Staking.tokenName, "myCBNFT");
+    assert.equal(Staking.tokenName, "STAKINGNFT");
     assert.equal(
       Staking.tokenURI,
-      "https://gateway.pinata.cloud/ipfs/QmYFmJgQGH4uPHRYN15Xdv4aLd9o4Aq63y1e4GgN6kj5aK/2"
+      "https://gateway.pinata.cloud/ipfs/QmVg4ZKBHNrVEHHxn47ejBZa1QwqZPr1eTVXadmBh1BYWb?preview=1"
     );
     assert.equal(Staking.mintedBy, accounts[0]);
     assert.equal(Staking.currentOwner, accounts[0]);
@@ -126,58 +120,21 @@ describe("application features", async () => {
   });
 
   it("not allows users to mint ERC721 token  - same token uri -reject ", async () => {
-      
-    /* const colorsArray2 = [
-      "#212b2e",
-      "#515a66",
-      "#a1c2a8",
-      "#a1eb98",
-      "#81ff65",
-      "#915d81",
-      "#e18258",
-      "#f1f740",
-      "#d1dc6a",
-      "#6189a1",
-      "#f1938c",
-      "#e1b89c",
-      "#e1d2ac",
-      "#91afb7",
-      "#4181a4",
-    ]; */
+
 
     await nftStaking.mintStaking(
-      "myCBNFT2",
-      "https://gateway.pinata.cloud/ipfs/QmYFmJgQGH4uPQRYN15Xdv4aLd9o4Aq63y1e4GgN6kj5aK/2",
+      "STAKINGNFT2",
+      "https://gateway.pinata.cloud/ipfs/QmTggr8gpSqXP7sw6gaHica88pbicNZSCiMUBguJbvsMsF?preview=1",
       web3.utils.toWei("1", "Ether"),
       { from: accounts[1] }
 
     );
-  
-
-    
-         /*  const colorsArray3 = [
-          "#232b2e",
-          "#535a66",
-          "#a3c2a8",
-          "#a3eb98",
-          "#83ff65",
-          "#935d81",
-          "#e38258",
-          "#f3f740",
-          "#d3dc6a",
-          "#6389a1",
-          "#f3938c",
-          "#e3b89c",
-          "#e3d2ac",
-          "#93afb7",
-          "#4381a4",
-        ]; */
 
     try{
         // same token uri -reject
         await nftStaking.mintStaking(
-          "myCBNFT3",
-          "https://gateway.pinata.cloud/ipfs/QmYFmJgQGH4uPQRYN15Xdv4aLd9o4Aq63y1e4GgN6kj5aK/2",
+          "STAKINGNFT3",
+          "https://gateway.pinata.cloud/ipfs/QmTggr8gpSqXP7sw6gaHica88pbicNZSCiMUBguJbvsMsF?preview=1",
           web3.utils.toWei("1", "Ether"),
           { from: accounts[3] }
         );
@@ -188,156 +145,38 @@ describe("application features", async () => {
 
   });
 
- 
-
-  /* it("not allows users to mint ERC721 token - 0x0 adress sending txn - reject", async () => {
-
-    const colorsArray4 = [
-      "#252b2e",
-      "#555a66",
-      "#a5c2a8",
-      "#a5eb98",
-      "#85ff65",
-      "#955d81",
-      "#e58258",
-      "#f5f740",
-      "#d5dc6a",
-      "#6589a1",
-      "#f5938c",
-      "#e5b89c",
-      "#e5d2ac",
-      "#95afb7",
-      "#4581a4",
-    ];
-    try{
-          // 0x0 adress sending txn - reject
-      await nftStaking.mintStaking(
-        "myCBNFT4",
-        "https://gateway.pinata.cloud/ipfs/QmYFmJgQGH4uPQRYN14Xdv4aLd9o4Aq63y1e4GgN6kj5aK/2",
-        web3.utils.toWei("1", "Ether"),
-        colorsArray4,
-        //{ from: address(0) }
-        { from: 0x0000000000000000000000000000000000000000 }
-       )
-    }catch (error){
-      assert.equal(error.reason,"Try to mint NFT with 0x0 adress");
-    }
-    }); */
-
- 
-
   it("not allows users to mint 5th ERC721 token", async () => {
 
-  /*   const colorsArray5 = [
-      "#2d2b2e",
-      "#5d5a66",
-      "#adc2a8",
-      "#adeb98",
-      "#8dff65",
-      "#9d5d81",
-      "#ed8258",
-      "#fdf740",
-      "#dddc6a",
-      "#6d89a1",
-      "#fd938c",
-      "#edb89c",
-      "#edd2ac",
-      "#9dafb7",
-      "#4d81a4",
-    ];
- */
-    await nftStaking.mintStaking(
-      "myCBNFT5",
-      "https://gateway.pinata.cloud/ipfs/QmYFmJgQGH4uPRRYN15Xdv4aLd9o4Aq63y1e4GgN6kj5aK/2",
+   await nftStaking.mintStaking(
+      "STAKINGNFT5",
+      "https://gateway.pinata.cloud/ipfs/QmNwM781AnDxbGmBJ7bpHuh2z3JALMNHgtpkbrbZrjy8tV?preview=1",
       web3.utils.toWei("1", "Ether"),
       { from: accounts[0] }
     );
 
-    /* const colorsArray6 = [
-      "#2f2b2e",
-      "#5f5a66",
-      "#afc2a8",
-      "#afeb98",
-      "#8fff65",
-      "#9f5d81",
-      "#ef8258",
-      "#fff740",
-      "#dfdc6a",
-      "#6f89a1",
-      "#ff938c",
-      "#efb89c",
-      "#efd2ac",
-      "#9fafb7",
-      "#4f81a4",
-    ]; */
 
     await nftStaking.mintStaking(
-      "myCBNFT6",
-      "https://gateway.pinata.cloud/ipfs/QmYFmJgQGH4uPSRYN15Xdv4aLd9o4Aq63y1e4GgN6kj5aK/2",
+      "STAKINGNFT6",
+      "https://gateway.pinata.cloud/ipfs/QmbddhPV4LZbo5hvCpKWW3bHAVX28bKRq6Qgpedp1zuQY9?preview=1",
       web3.utils.toWei("1", "Ether"),
       { from: accounts[0] }
     );
 
-/*     const colorsArray7 = [
-      "#2a2b22",
-      "#5a5a62",
-      "#a4c2a2",
-      "#aceb92",
-      "#87ff62",
-      "#995d82",
-      "#eb8252",
-      "#f6f742",
-      "#d8dc62",
-      "#6689a2",
-      "#fe9382",
-      "#e6b892",
-      "#ead2a2",
-      "#9cafb2",
-      "#4281a2",
-    ]; */
+
 
     // same token name - reject
     try{
 
         await nftStaking.mintStaking(
-        "myCBNFT6",
-        "https://gateway.pinata.cloud/ipfs/QmYFmJgQGH4uPSRYN15Xdv4aLd3o4Aq63y1e4GgN6kj5aK/2",
+        "STAKINGNFT6",
+        "https://gateway.pinata.cloud/ipfs/QmVQybBSbQftJ3GzrpY7oZxp49VnyVHQrAVWeb5yuE2Yrb?preview=1",
         web3.utils.toWei("1", "Ether"),
         { from: accounts[0] }
       );
     }catch(error){
       assert.equal(error.reason, "Try to mint NFT with the same name");
     }
-  /*   const colorsArray8 = [
-      "#2a242e",
-      "#5a5466",
-      "#a4c4a8",
-      "#ace498",
-      "#87f465",
-      "#995481",
-      "#eb8458",
-      "#f6f440",
-      "#d8d46a",
-      "#6684a1",
-      "#fe948c",
-      "#e6b49c",
-      "#f6f740",
-      "#9ca4b7",
-      "#4284a4",
-    ];
-    try{
 
-        // same color/colors - reject (13th value of array8 is same as 8th value of array1)
-        await nftStaking.mintStaking(
-          "myCBNFT8",
-          "https://gateway.pinata.cloud/ipfs/QmYFmJgQGH4uPSRYN15Xdv4aLd3o4Bq46y1f4GgN6kj5aK/2",
-          web3.utils.toWei("1", "Ether"),
-          colorsArray8,
-          { from: accounts[0] }
-        )
-    }catch(error){
-      assert.equal(error.reason,"Try to mint NFT with the some color");
-    }*/
   });  
 
   it("returns address of the token's owner", async () => {
@@ -351,7 +190,7 @@ describe("application features", async () => {
    const tokenMetaData = await nftStaking.getTokenMetaData(2);
     assert.equal(
       tokenMetaData,
-      "https://gateway.pinata.cloud/ipfs/QmYFmJgQGH4uPQRYN15Xdv4aLd9o4Aq63y1e4GgN6kj5aK/2"
+      "https://gateway.pinata.cloud/ipfs/QmTggr8gpSqXP7sw6gaHica88pbicNZSCiMUBguJbvsMsF?preview=1"
     );
   });
 
@@ -366,7 +205,7 @@ describe("application features", async () => {
     );
     assert.equal(totalNumberOfTokensOwnedByAnAddress.toNumber(), 3); 
   });
-  it("allows users to stake token myCBNFT2 ", async () => {
+  it("allows users to stake token STAKINGNFT2 ", async () => {
 
     // save original NFT token
     let originalTokenOwner = await nftStaking.getTokenOwner(2);
@@ -379,7 +218,7 @@ describe("application features", async () => {
      console.log("New NFT token owner: " + newTokenOwner );
      assert.notEqual(originalTokenOwner,newTokenOwner);
   });
-  it("allows users to remove stake token myCBNFT2 ", async () => {
+  it("allows users to remove stake token STAKINGNFT2 ", async () => {
 
     // save original NFT token
     let originalTokenOwner = await nftStaking.getTokenOwner(2);
@@ -393,7 +232,7 @@ describe("application features", async () => {
     assert.notEqual(originalTokenOwner,newTokenOwner);
   });
 
-  it("allows users to stake token myCBNFT1 ", async () => {
+  it("allows users to stake token STAKINGNFT ", async () => {
 
     // save original NFT token
     let originalTokenOwner = await nftStaking.getTokenOwner(1);
@@ -409,7 +248,7 @@ describe("application features", async () => {
 
 
 
-   it("try to to remove stake nft myCBNFT1 using a diffeterent user, who is not the original owner  ", async () => {
+   it("try to to remove stake nft STAKINGNFT using a diffeterent user, who is not the original owner  ", async () => {
 
     // save original NFT token
     let originalTokenOwner = await nftStaking.getTokenOwner(1);
@@ -427,18 +266,22 @@ describe("application features", async () => {
     console.log("New NFT token owner: " + newTokenOwner );
   });
 
-  it("allows users to remove stake token myCBNFT1 ", async () => {
+  it("allows users to remove stake token STAKINGNFT ", async () => {
 
     // save original NFT token
     let originalTokenOwner = await nftStaking.getTokenOwner(1);
+    let original = await nftStaking.getOriginalOwner(1);
     console.log("original NFT token owner: " + originalTokenOwner );
+    
 
     await nftStaking.removeStake(1, { from: accounts[0] }
       );
     // save new NFT token
     let newTokenOwner = await nftStaking.getTokenOwner(1);
+   
     console.log("New NFT token owner: " + newTokenOwner );
     assert.notEqual(originalTokenOwner,newTokenOwner);
+    assert.equal(original,newTokenOwner);
   })
  
   it("allows users to buy token for specified ethers", async () => {
@@ -455,7 +298,7 @@ describe("application features", async () => {
     oldTotalNumberOfTokensOwnedBySeller = await nftStaking.getTotalNumberOfTokensOwnedByAnAddress(
       accounts[0]
     );
-    assert.equal(oldTotalNumberOfTokensOwnedBySeller.toNumber(), 3); //change to 3
+    assert.equal(oldTotalNumberOfTokensOwnedBySeller.toNumber(), 3); 
 
     let Staking;
     Staking = await nftStaking.allNFTStaking(1, {
@@ -501,25 +344,6 @@ describe("application features", async () => {
     });
     assert.equal(Staking.currentOwner, accounts[2]);
 
-    /*
-    try{
-      await nftStaking.buyToken(2, {
-      from: 0x0000000000000000000000000000000000000000,
-      value: web3.utils.toWei("1", "Ether"),
-    });
-    }catch (error) {
-      assert.equal(error.reason, "Try to buy nft with user 0x000000000000");
-    }
-
-    await nftStaking.buyToken(56, {
-      from: accounts[4],
-      value: web3.utils.toWei("1", "Ether"),
-    }).should.be.rejected;
-
-    await nftStaking.buyToken(3, {
-      from: accounts[0],
-      value: web3.utils.toWei("1", "Ether"),
-    }).should.be.rejected; */ 
   });
   
   
@@ -529,7 +353,8 @@ describe("application features", async () => {
       from: accounts[0],
     });
     assert.equal(web3.utils.fromWei(StakingPrice.price, "ether"), 1);
-
+    const newTokenOwner = await nftStaking.getTokenOwner(1);
+  
     result = await nftStaking.changeTokenPrice(
       1,
       web3.utils.toWei("2", "Ether"),
@@ -542,23 +367,7 @@ describe("application features", async () => {
       from: accounts[0],
     });
     assert.equal(web3.utils.fromWei(StakingPrice.price, "ether"), 2);
-    
-    /* await nftStaking.changeTokenPrice(1, web3.utils.toWei("3", "Ether"), {
-      from: 0x0000000000000000000000000000000000000000,
-    }).should.be.rejected; */
-    /* try{
-      await nftStaking.changeTokenPrice(82, web3.utils.toWei("3", "Ether"), {
-      from: accounts[2],
-      });
-    }catch(error){
-      assert.equal(error.reason,"Try to change token price with a user that is not the owner");
-    } */
 
-  
-    /*
-    await nftStaking.changeTokenPrice(1, web3.utils.toWei("3", "Ether"), {
-      from: accounts[6],
-    }).should.be.rejected; */
   }); 
 
   it("allows users to toggle between setting the token for sale or not for sale", async () => {
@@ -582,15 +391,6 @@ describe("application features", async () => {
     });
     assert.equal(Staking.forSale, true);
 
-    /* await nftStaking.toggleForSale(1, {
-      from: 0x0000000000000000000000000000000000000000,
-    }).should.be.rejected;
-
-    await nftStaking.toggleForSale(94, { from: accounts[2] }).should.be
-      .rejected;
-
-    await nftStaking.toggleForSale(1, { from: accounts[8] }).should.be
-      .rejected; */
   }); 
 });
 });
