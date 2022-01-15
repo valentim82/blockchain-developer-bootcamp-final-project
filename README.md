@@ -22,7 +22,7 @@ https://valentim82.github.io/
   - Users can mint their NFT
 
   - Users can sell their NFT (missing front end)
-  - 
+  
   - Users can buy  NFT (missing front end)
 
   - Users can stake their NFT  on the platform
