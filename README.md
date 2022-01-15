@@ -11,6 +11,9 @@ https://valentim82.github.io/
 
 ## How to run this project locally:
 
+- Connect MetaMask with Ropsten testnet
+- Open https://valentim82.github.io/
+
 
 ### Landing Contract  Workflow
 
@@ -18,7 +21,9 @@ https://valentim82.github.io/
 
   - Users can mint their NFT
 
-  - Users can sell their NFT
+  - Users can sell their NFT (missing front end)
+  - 
+  - Users can buy  NFT (missing front end)
 
   - Users can stake their NFT  on the platform
 
@@ -36,6 +41,7 @@ https://valentim82.github.io/
 
 ### To do:
   - Create a token utility to reward the staking.
+  - Implement frontend interface to sell and buy nft.
 
 
 ## How to run project
@@ -77,4 +83,11 @@ https://valentim82.github.io/
 - npm start
 - In browser, go to http://localhost:3000/
 - Add more accounts from Ganache to Metamask to test multiple features
+
+### Screencast link
+
+
+### Public Ethereum wallet for certification:
+0x3BD36ED200b449290014910C80B47A9e30306E48
+
 
